@@ -45,3 +45,28 @@ button {
 .erreur {
   color: #d32f2f;
 }
+
+nav {
+  display: flex;
+  gap: 1.5rem;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+nav a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+nav a.active {
+  color: var(--text-h);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.carte-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}

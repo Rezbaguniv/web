@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
-import CarteCommune from './CarteCommune.jsx'
+import { NavLink, Route, Routes } from 'react-router'
+import Accueil from './pages/Accueil.jsx'
+import Detail from './pages/Detail.jsx'
+import Favoris from './pages/Favoris.jsx'
+import Introuvable from './pages/Introuvable.jsx'
+
 import './App.css'
 
 function App() {
-  const [recherche, setRecherche] = useState('')
-  const [communes, setCommunes] = useState([])
-  const [chargement, setChargement] = useState(false)
-  const [erreur, setErreur] = useState('')
   const [favoris, setFavoris] = useState(() => {
     const sauvegarde = localStorage.getItem('favoris')
     return sauvegarde ? JSON.parse(sauvegarde) : []
@@ -15,25 +16,6 @@ function App() {
   useEffect(() => {
     localStorage.setItem('favoris', JSON.stringify(favoris))
   }, [favoris])
-
-  async function chercher(event) {
-    event.preventDefault()
-    if (recherche.trim() === '') return
-    setChargement(true)
-    setErreur('')
-    try {
-      const url = `https://geo.api.gouv.fr/communes?nom=${encodeURIComponent(recherche)}&fields=nom,code,population,departement&boost=population&limit=10`
-      const reponse = await fetch(url)
-      if (!reponse.ok) throw new Error('Réponse ' + reponse.status)
-      const donnees = await reponse.json()
-      setCommunes(donnees)
-    } catch {
-      setErreur('Impossible de charger les communes. Vérifiez votre connexion, puis réessayez.')
-      setCommunes([])
-    } finally {
-      setChargement(false)
-    }
-  }
 
   function estFavori(commune) {
     return favoris.some((f) => f.code === commune.code)
@@ -49,43 +31,27 @@ function App() {
 
   return (
     <main>
-      <h1>Communes de France</h1>
+      <nav>
+        <NavLink to="/">Recherche</NavLink>
+        <NavLink to="/favoris">Favoris ({favoris.length})</NavLink>
+      </nav>
 
-      <form onSubmit={chercher}>
-        <input
-          value={recherche}
-          onChange={(event) => setRecherche(event.target.value)}
-          placeholder="Nom d'une commune"
+      <Routes>
+        <Route
+          path="/"
+          element={<Accueil estFavori={estFavori} basculer={basculer} />}
         />
-        <button type="submit">Rechercher</button>
-      </form>
-
-      {chargement && <p>Chargement…</p>}
-      {erreur && <p className="erreur">{erreur}</p>}
-
-      {communes.map((c) => (
-        <CarteCommune
-          key={c.code}
-          nom={c.nom}
-          population={c.population}
-          departement={c.departement}
-          favori={estFavori(c)}
-          onBasculer={() => basculer(c)}
+        <Route
+          path="/favoris"
+          element={<Favoris favoris={favoris} basculer={basculer} />}
         />
-      ))}
-
-      <h2>Mes favoris</h2>
-      {favoris.length === 0 && <p>Aucun favori pour le moment.</p>}
-      {favoris.map((c) => (
-        <CarteCommune
-          key={c.code}
-          nom={c.nom}
-          population={c.population}
-          departement={c.departement}
-          favori={true}
-          onBasculer={() => basculer(c)}
+        <Route 
+          path="/commune/:code" 
+          element={<Detail />} 
         />
-      ))}
+        <Route path="*" element={<Introuvable />} />
+
+      </Routes>
     </main>
   )
 }

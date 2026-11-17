@@ -1,4 +1,6 @@
-function CarteCommune({ nom, population, departement, favori, onBasculer }) {
+import { Link } from 'react-router'
+
+function CarteCommune({ code, nom, population, departement, favori, onBasculer }) {
   const habitants =
     population === undefined
       ? 'population inconnue'
@@ -10,9 +12,12 @@ function CarteCommune({ nom, population, departement, favori, onBasculer }) {
       <p>
         {departement?.nom} · {habitants}
       </p>
-      <button onClick={onBasculer}>
-        {favori ? '★ Retirer des favoris' : '☆ Ajouter aux favoris'}
-      </button>
+      <div className="carte-actions">
+        <button onClick={onBasculer}>
+          {favori ? '★ Retirer des favoris' : '☆ Ajouter aux favoris'}
+        </button>
+        <Link to={`/commune/${code}`}>Voir le détail</Link>
+      </div>
     </article>
   )
 }
