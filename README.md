@@ -2,7 +2,7 @@
 
 Application web pour chercher une commune française, la garder en favori et consulter sa fiche : département, région, population, surface et codes postaux.
 
-**Site en ligne :** à compléter à l'étape 7
+**Site en ligne :** https://web-five-omega-wwh7cw4a7o.vercel.app/
 
 ## Technologies
 
