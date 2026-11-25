@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { SubmitEvent } from 'react'
 import CarteCommune from '../CarteCommune.tsx'
+import { API_URL } from '../config.ts'
 import type { Commune } from '../types.ts'
 
 type Props = {
@@ -20,7 +21,7 @@ function Accueil({ estFavori, basculer }: Props) {
     setChargement(true)
     setErreur('')
     try {
-      const url = `https://geo.api.gouv.fr/communes?nom=${encodeURIComponent(recherche)}&fields=nom,code,population,departement&boost=population&limit=10`
+      const url = `${API_URL}/communes?nom=${encodeURIComponent(recherche)}&fields=nom,code,population,departement&boost=population&limit=10`
       const reponse = await fetch(url)
       if (!reponse.ok) throw new Error('Réponse ' + reponse.status)
       const donnees: Commune[] = await reponse.json()

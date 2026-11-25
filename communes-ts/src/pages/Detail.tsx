@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router'
 import type { Commune } from '../types.ts'
+import { API_URL } from '../config.ts'
+
 
 function Detail() {
   const { code } = useParams()
@@ -10,7 +12,7 @@ function Detail() {
   useEffect(() => {
     async function charger() {
       try {
-        const url = `https://geo.api.gouv.fr/communes/${code}?fields=nom,code,population,departement,region,codesPostaux,surface`
+        const url = `${API_URL}/communes/${code}?fields=nom,code,population,departement,region,codesPostaux,surface`
         const reponse = await fetch(url)
         if (!reponse.ok) throw new Error('Réponse ' + reponse.status)
         const donnees: Commune = await reponse.json()
